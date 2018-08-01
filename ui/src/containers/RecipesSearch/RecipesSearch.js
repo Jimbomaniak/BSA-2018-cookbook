@@ -17,7 +17,7 @@ export default class RecipesSearch extends Component {
   }
 
   handleSearchChange = (event, { value }) => {
-    this.setState({ isLoading: true, value })
+    this.setState({ isLoading: true, value });
 
     setTimeout(() => {
       const re = new RegExp(this.state.value, 'i');
@@ -27,15 +27,19 @@ export default class RecipesSearch extends Component {
 
       this.setState({
         isLoading: false,
-        results: results,
+        results,
       });
-    }, 500)
+    }, 500);
   }
 
   resultRenderer({ _id, title, rating }) {
-    return <Link to={`/recipes/${_id}`}>
-    <div key={_id}>{`${title} - rating: ${rating} stars`}</div>
-    </Link>
+    return (
+      <Link to={`/recipes/${_id}`}>
+        <div key={_id}>
+      {`${title} - rating: ${rating} stars`}
+        </div>
+      </Link>
+    );
   }
 
   render() {
@@ -49,6 +53,6 @@ export default class RecipesSearch extends Component {
         results={results}
         value={value}
       />
-    )
+    );
   }
 }

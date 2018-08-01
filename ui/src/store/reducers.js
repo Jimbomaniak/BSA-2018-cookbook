@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import recipesReducer from './../containers/Recipes/RecipesReducer';
+import recipesReducer from '../containers/Recipes/RecipesReducer';
 
 export default combineReducers({
-  recipes: recipesReducer
+  recipes: recipesReducer,
 });

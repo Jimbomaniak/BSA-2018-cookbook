@@ -1,24 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators} from 'redux';
-import {Container , Grid } from 'semantic-ui-react';
+import { bindActionCreators } from 'redux';
+import { Container, Grid } from 'semantic-ui-react';
 import { fetchRecipe, updateRecipe } from '../Recipes/RecipesActions';
-import { isRecipesFetching, activeRecipe} from '../Recipes/RecipesReducer';
+import { isRecipesFetching, activeRecipe } from '../Recipes/RecipesReducer';
 import RecipeForm from '../../components/RecipeForm/RecipeForm';
 
 class RecipeEditing extends Component {
   state = {
-    recipeToFetch: null
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (state.recipeToFetch !== props.match.params.id) {
-      return {
-        recipeToFetch: props.match.params.id
-      };
-    }
-    return null;
+    recipeToFetch: null,
   }
 
   componentDidMount() {
@@ -28,59 +19,72 @@ class RecipeEditing extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.recipe && (this.state.recipeToFetch !== this.props.recipe._id)){
+    if (this.props.recipe && (this.state.recipeToFetch !== this.props.recipe._id)) {
       this.props.actions.fetchRecipe(this.state.recipeToFetch);
     }
   }
 
-  handleSubmit = data => {
+  static getDerivedStateFromProps(props, state) {
+    if (state.recipeToFetch !== props.match.params.id) {
+      return {
+        recipeToFetch: props.match.params.id,
+      };
+    }
+    return null;
+  }
+
+  handleSubmit = (data) => {
     this.props.actions.updateRecipe({
       ...this.props.recipe,
-      ...data
+      ...data,
     });
   }
 
   handleCancel = () => {
-    this.props.history.push('/recipes')
+    this.props.history.push('/recipes');
   }
 
-  render () {
-    const {isFetching, recipe} = this.props;
+  render() {
+    const { isFetching, recipe } = this.props;
 
-    return <Container>
-      <Grid centered columns={2}>
-        {
-          !!recipe && <RecipeForm
+    return (
+      <Container>
+        <Grid centered columns={2}>
+          {
+          !!recipe && (
+          <RecipeForm
             disabled={isFetching}
-            title='Edit recipe'
+            title="Edit recipe"
             onSubmit={this.handleSubmit}
             onCancel={this.handleCancel}
-            submitButtonTitle='Update recipe'
-            submitButtonIcon ='save outline'
+            submitButtonTitle="Update recipe"
+            submitButtonIcon="save outline"
             initialValues={recipe}
-            cancelButtonTitle='Go back to recipes'
-            cancelButtonIcon='arrow left'
-            />
+            cancelButtonTitle="Go back to recipes"
+            cancelButtonIcon="arrow left"
+          />
+          )
         }
-      </Grid>
-    </Container>
+        </Grid>
+      </Container>
+    );
   }
 }
 
 
 RecipeEditing.propTypes = {
-  recipe: PropTypes.object,
+  recipe: PropTypes.shape,
   isFetching: PropTypes.bool,
-  actions: PropTypes.object.isRequired
-}
+  actions: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = state => ({
   recipe: activeRecipe(state),
-  isFetching: isRecipesFetching(state)
+  isFetching: isRecipesFetching(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators({ fetchRecipe, updateRecipe}, dispatch)
+  actions: bindActionCreators({ fetchRecipe, updateRecipe }, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecipeEditing);
